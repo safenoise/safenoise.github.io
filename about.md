@@ -12,4 +12,4 @@ We are all dean
 
 ### Contact me
 
-[Nah.](isaacdavis.github.io)
+[Nah.](http://isaacdavis.github.io)
