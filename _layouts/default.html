@@ -27,15 +27,70 @@
           </div>
 
           <nav>
-            <a href="{{ site.baseurl }}/">Blog</a>
+            <a href="{{ site.baseurl }}/">Home</a>
             <a href="{{ site.baseurl }}/about">About</a>
           </nav>
         </header>
       </div>
     </div>
 
-    <div id="main" role="main" class="container">
-      {{ content }}
+    <div id="wrap" class="container-fluid">
+        <div class="row">
+            <div class="content col-md-3"></div>
+
+            <div class="content col-md-6">
+                {{ content }}
+            </div>
+            
+            <div class="sidebar content col-md-2">
+                <iframe class="embed-responsive-item"
+                    src="https://embed.spotify.com/?uri=spotify%3Auser%3Asafenoise%3Aplaylist%3A0bwjsohqDjrMJ768dyTTjR"
+                    width="100%" height="380" frameborder="0" allowtransparency="true"></iframe>
+                <h2>Archive</h2>
+                <ul>
+                    {% assign currentYear = site.time | date: "%Y" %}
+                    {% assign currentMonth = site.time | date: "%B" %}
+                    {% for post in site.posts %}
+
+                        {% assign postYear = post.date | date: "%Y" %}
+                        {% assign postMonth = post.date  | date: "%B" %}
+
+                        {% if forloop.first %}
+                        <li><a role="button" data-toggle="collapse" href="#collapse{{ postYear }}" aria-expanded="false" aria-controls="collapse{{ postYear }}">{{ postYear}}</a>
+                            <ul class="collapse in" id="collapse{{ postYear }}">
+                                <li><a role="button" data-toggle="collapse" href="#collapse{{ postYear }}{{ postMonth }}" aria-expanded="false" aria-controls="collapse{{ postYear }}{{ postMonth}}">{{ postMonth}}</a>
+                                    <ul class="collapse in" id="collapse{{ postYear }}{{ postMonth }}">
+                        {% endif %}
+
+                        <!-- Jank repetition to avoid warning -->
+                        {% if postYear == currentYear and postMonth == currentMonth %}
+                            <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></li>
+                        {% elsif forloop.first %}
+                            <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></li>
+                        {% endif %}
+                        <!-- End jank repetition -->
+
+                        {% if postYear == currentYear and postMonth != currentMonth %}
+                            </ul></li>
+                                <li><a role="button" data-toggle="collapse" href="#collapse{{ postYear }}{{ postMonth }}" aria-expanded="false" aria-controls="collapse{{ postYear }}{{ postMonth}}">{{ postMonth}}</a>
+                                    <ul class="collapse" id="collapse{{ postYear }}{{ postMonth }}">
+                                    <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></li>
+                        {% endif %}
+
+                        {% if postYear != currentYear %}
+                            </ul></li></ul></li>
+                            <li><a role="button" data-toggle="collapse" href="#collapse{{ postYear }}" aria-expanded="false" aria-controls="collapse{{ postYear }}">{{ postYear}}</a>
+                                <ul class="collapse" id="collapse{{ postYear }}">
+                                    <li><a role="button" data-toggle="collapse" href="#collapse{{ postYear }}{{ postMonth }}" aria-expanded="false" aria-controls="collapse{{ postYear }}{{ postMonth}}">{{ postMonth}}</a>
+                                        <ul class="collapse" id="collapse{{ postYear }}{{ postMonth }}">
+                                            <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></li>
+                        {% endif %}
+                        {% assign currentYear = postYear %}
+                        {% assign currentMonth = postMonth %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
 
     <div class="wrapper-footer">
@@ -47,5 +102,12 @@
     </div>
 
     {% include analytics.html %}
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
   </body>
 </html>
